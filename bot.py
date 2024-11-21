@@ -23,34 +23,87 @@ import pickle
 USERINFO = {}  # holds user information
 CAPTCHA_DATA = {}
 # %% ENV VARIABLES
-COIN_SYMBOL = os.environ["COIN_SYMBOL"]
-COIN_NAME = os.environ["COIN_NAME"]
-AIRDROP_AMOUNT = os.environ["AIRDROP_AMOUNT"]
-AIRDROP_AMOUNT = "{:,.2f}".format(float(AIRDROP_AMOUNT))
-AIRDROP_DATE = os.environ["AIRDROP_DATE"]
-BOT_TOKEN = os.environ["BOT_TOKEN"]
-AIRDROP_NETWORK = os.environ["AIRDROP_NETWORK"]
-REFERRAL_REWARD = float(os.environ["REFERRAL_REWARD"])
-COIN_PRICE = os.environ["COIN_PRICE"]
-WEBSITE_URL = os.environ["WEBSITE_URL"]
-DB_URI = os.environ["DB_URI"]
-EXPLORER_URL = os.environ["EXPLORER_URL"]
-ADMIN_USERNAME = os.environ["ADMIN_USERNAME"]
+import os
 
-TWITTER_LINKS = os.environ["TWITTER_LINKS"]
-TELEGRAM_LINKS = os.environ["TELEGRAM_LINKS"]
-DISCORD_LINKS = os.environ["DISCORD_LINKS"]
-MAX_USERS = int(os.environ["MAX_USERS"])
-MAX_REFS = int(os.environ["MAX_REFS"])
-CAPTCHA_ENABLED = os.environ["CAPTCHA_ENABLED"]
+COIN_SYMBOL = os.environ.get("COIN_SYMBOL")
+COIN_NAME = os.environ.get("COIN_NAME")
 
-TWITTER_LINKS = TWITTER_LINKS.split(",")
-TELEGRAM_LINKS = TELEGRAM_LINKS.split(",")
-DISCORD_LINKS = DISCORD_LINKS.split(",")
+# Safely handle AIRDROP_AMOUNT
+AIRDROP_AMOUNT = os.environ.get("AIRDROP_AMOUNT", "0.00")  # Default to "0.00" if not set
+try:
+    AIRDROP_AMOUNT = "{:,.2f}".format(float(AIRDROP_AMOUNT))
+except (ValueError, TypeError) as e:
+    print(f"Error formatting AIRDROP_AMOUNT: {e}")
+    AIRDROP_AMOUNT = "0.00"  # Fallback value in case of an error
+
+AIRDROP_DATE = os.environ.get("AIRDROP_DATE")
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
+AIRDROP_NETWORK = os.environ.get("AIRDROP_NETWORK")
+
+# Safely handle REFERRAL_REWARD
+REFERRAL_REWARD = os.environ.get("REFERRAL_REWARD", "0.0")  # Default to "0.0" if not set
+try:
+    REFERRAL_REWARD = float(REFERRAL_REWARD)
+except (ValueError, TypeError) as e:
+    print(f"Error converting REFERRAL_REWARD: {e}")
+    REFERRAL_REWARD = 0.0  # Fallback value in case of an error
+
+COIN_PRICE = os.environ.get("COIN_PRICE")
+WEBSITE_URL = os.environ.get("WEBSITE_URL")
+DB_URI = os.environ.get("DB_URI")
+EXPLORER_URL = os.environ.get("EXPLORER_URL")
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
+
+# Safely handle MAX_USERS
+MAX_USERS = os.environ.get("MAX_USERS", "1000")  # Default to "1000" if not set
+try:
+    MAX_USERS = int(MAX_USERS)
+except (ValueError, TypeError) as e:
+    print(f"Error converting MAX_USERS: {e}")
+    MAX_USERS = 1000  # Fallback value in case of an error
+
+# Print values for debugging
+print(f"AIRDROP_AMOUNT: {AIRDROP_AMOUNT}")
+print(f"REFERRAL_REWARD: {REFERRAL_REWARD}")
+print(f"MAX_USERS: {MAX_USERS}")
+
+
+TWITTER_LINKS = os.environ.get("TWITTER_LINKS")
+TELEGRAM_LINKS = os.environ.get("TELEGRAM_LINKS")
+DISCORD_LINKS = os.environ.get("DISCORD_LINKS")
+MAX_USERS = os.environ.get("MAX_USERS")
+MAX_REFS = os.environ.get("MAX_REFS")
+CAPTCHA_ENABLED = os.environ.get("CAPTCHA_ENABLED")
+
+# Fetch environment variables with fallback values
+TWITTER_LINKS = os.environ.get("TWITTER_LINKS", "")  # Default to empty string if not set
+TELEGRAM_LINKS = os.environ.get("TELEGRAM_LINKS", "")  # Default to empty string if not set
+DISCORD_LINKS = os.environ.get("DISCORD_LINKS", "")  # Default to empty string if not set
+
+# Check if links are not None and split them, otherwise assign an empty list
+if TWITTER_LINKS:
+    TWITTER_LINKS = TWITTER_LINKS.split(",")
+else:
+    TWITTER_LINKS = []
+
+if TELEGRAM_LINKS:
+    TELEGRAM_LINKS = TELEGRAM_LINKS.split(",")
+else:
+    TELEGRAM_LINKS = []
+
+if DISCORD_LINKS:
+    DISCORD_LINKS = DISCORD_LINKS.split(",")
+else:
+    DISCORD_LINKS = []
+
+# Join the links into a string with newlines
 TWITTER_LINKS = "\n".join(TWITTER_LINKS)
 TELEGRAM_LINKS = "\n".join(TELEGRAM_LINKS)
 DISCORD_LINKS = "\n".join(DISCORD_LINKS)
+
+# Define the path for the status file
 STATUS_PATH = "./conversationbot/botconfig.p"
+
 if os.path.exists(STATUS_PATH):
     BOT_STATUS = {}
     pickle.load(open(STATUS_PATH, "rb"))
