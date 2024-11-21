@@ -37,7 +37,7 @@ except (ValueError, TypeError) as e:
     AIRDROP_AMOUNT = "0.00"  # Fallback value in case of an error
 
 AIRDROP_DATE = os.environ.get("AIRDROP_DATE")
-BOT_TOKEN = os.environ.get("BOT_TOKEN")
+BOT_TOKEN = "7285088405:AAFPzuu9pZBHBoUd79GhIsy2GC9ULVYzPLY" #os.environ.get("BOT_TOKEN")
 AIRDROP_NETWORK = os.environ.get("AIRDROP_NETWORK")
 
 # Safely handle REFERRAL_REWARD
